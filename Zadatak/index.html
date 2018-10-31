@@ -1,0 +1,442 @@
+<html>
+    <head>
+		
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <link rel="stylesheet" type="text/css"  href="style.css">
+        <link rel="stylesheet" type="text/css"  href="autocomplete/autocomplete.css">
+        <script type="text/javascript" src="autocomplete/autocomplete.js"></script>
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/series-label.js"></script>	
+		<script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="graphData.js"></script>
+    </head>
+    <body>
+        <div class="row">
+            <div class="sidebar">
+            </div>
+            <div class="content">
+                <h1 class="header">
+                    Report
+                </h1>
+                <div id="search-panel" class="search-panel">
+                    <form autocomplete="off">
+                        <input id="mac-address" class="search-input" type="text" name="contract" placeholder="Mac: address">
+                        <div class="autocomplete" style="width:300px;">
+                            <input id="contract-id" class="search-input" type="text" name="contract" placeholder="Contract ID">
+                        </div>
+                        <i id="reset-icon" class="glyphicon glyphicon-refresh refresh-icon"></i>
+                        <b><input id="apply-filters" class="search-button search-input" value="Apply filters" type="button" /></b>
+                    </form>
+                </div>
+                <div id="status-panel" style="display:none" class="status-panel">
+                    <div class="col-md-3">
+                        <div class="status-details row">
+                            <p class="status-details-title col-md-12"><b>Currently viewing data:</b></p>
+                            <div class="clean row col-md-12">
+                                <div class="status-details-labels row col-md-6">
+                                    <p class="line col-md-12">MAC address:</p>
+                                    <p class="line col-md-12">Contract ID:</p>
+                                    <p class="line col-md-12">City</p>
+                                </div>
+                                <div class="status-details-data row col-md-6">
+                                    <p id="mac-address-display" class="line col-md-12">AA.BB.CC.DD.EE</p>
+                                    <p id="contract-id-display" class="line col-md-12">314592654</p>
+                                    <p class="line col-md-12">Budapest</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 header-central">
+                        <div class="date-switcher row">
+                            <div class="row">
+                                <div id="day-1" class="left date-switcher-button active col-md-6">1 Day</div>
+                                <div id="day-7" class="right date-switcher-button col-md-6">7 Days</div>
+                            </div>
+                            <p class="date-range"><input class="date-range" type="text" name="daterange" id="displayed-date" value="17.06.2018 - 18.06.2018" /></p>    
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="reset-panel">
+                            <div id="reset-filters" class="search-input reset-button" type="button" name="reset">
+                                    <i class="glyphicon glyphicon-tasks"></i>
+                                    Reset filters
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tabs">
+                    <div class="tab-control">
+                        <div id="tables-thumb" class="tab-control-thumb">
+                            <div class="tab-control-thumb-label">Tables</div>
+                        </div>
+                        <div id="graphs-thumb" class="tab-control-thumb">
+                            <div class="tab-control-thumb-label">Graphs</div>
+                        </div>
+                    </div>
+                    <div class="tab-content">
+                        <div id="tables-tab" class="tables-tab" style="display:none">
+                            <div class="tables-header">
+                                <div id="hgw-info-toggler" class="hi-toggler search-input" type="button" name="hgw-info-toggler">
+                                    HGw Info
+                                    <i id="hi-chev-down" style="display:none" class="glyphicon glyphicon-chevron-down"></i>
+                                    <i id="hi-chev-up"  class="glyphicon glyphicon-chevron-up"></i>
+                                </div>
+                            </div>
+                            <div class="tables-content row">
+                                <div class="col-md-3" style="padding-right:0px">
+                                    <div class="table-panel row">
+                                        <div class="table-panel-heading col-md-9">Overall Status</div>
+                                        <div class="clean col-md-3">
+                                            <div class="table-panel-heading-label medium">Medium</div>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel row">
+                                        <div class="table-panel-heading col-md-9">RSS Status</div>
+                                        <div class="clean col-md-3">
+                                            <div class="table-panel-heading-label bad">Bad</div>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel row">
+                                        <div class="table-panel-heading col-md-9">Client RSS Status</div>
+                                        <div class="clean col-md-3">
+                                            <div class="table-panel-heading-label medium">Medium</div>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel row">
+                                        <div class="table-panel-heading col-md-9">Sticky Client Status</div>
+                                        <div class="clean col-md-3">
+                                            <div class="table-panel-heading-label good">Good</div>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel row">
+                                        <div class="table-panel-heading smaller col-md-9">Interference Status - overall</div>
+                                        <div class="clean col-md-3">
+                                            <div class="table-panel-heading-label medium">Medium</div>
+                                        </div>
+                                        <div class="table-panel-heading offset smaller col-md-9">Interference Status Co- Channel</div>
+                                        <div class="clean offset col-md-3">
+                                            <div class="table-panel-heading-label good">Good</div>
+                                        </div>
+                                        <div class="table-panel-heading offset smaller col-md-9">Interference Status - Adjacent</div>
+                                        <div class="clean offset col-md-3">
+                                            <div class="table-panel-heading-label bad">Bad</div>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel row">
+                                        <div class="table-panel-heading smaller col-md-12">HGw Interference</div>
+                                        <div class="offset col-md-12 row">
+                                            <span class="table-panel-attribute right col-md-3">UniFI</span>
+                                            <div class="clean offset col-md-3">
+                                                <div class="table-panel-heading-label good">Good</div>
+                                            </div>
+                                            <span class="table-panel-attribute right col-md-3">Home</span>
+                                            <div class="clean offset col-md-3">
+                                                <div class="table-panel-heading-label medium">Medium</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel row">
+                                        <div class="table-panel-heading col-md-9">Retransmission Status</div>
+                                        <div class="clean col-md-3">
+                                            <div class="table-panel-heading-label bad">Bad</div>
+                                        </div>
+                                        <div class="clean offset col-md-12 row">
+                                            <span class="table-panel-attribute col-md-10">HGw Number of retransimissions</span>
+                                            <span class="clean table-panel-attribute right col-md-2">5515</span>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel row">
+                                        <div class="clean col-md-12 row">
+                                            <span class="table-panel-attribute col-md-10">Total Number of Clients</span>
+                                            <span class="table-panel-attribute right col-md-2">120</span>
+                                        </div>
+                                        <div class="clean offset col-md-12 row">
+                                            <span class="table-panel-attribute col-md-10">Max. number of concurent clients</span>
+                                            <span class="table-panel-attribute right col-md-2">10</span>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel row">
+                                        <div class="table-panel-heading smaller col-md-12">HGw Combined status</div>
+                                        <div class="clean offset col-md-12 row">
+                                            <span class="table-panel-attribute col-md-10">HGw Number of clients</span>
+                                            <span class="table-panel-attribute right col-md-2">15</span>
+                                        </div>
+                                        <div class="clean offset col-md-12 row">
+                                            <span class="table-panel-attribute col-md-10">HGw Number of sticky clients</span>
+                                            <span class="table-panel-attribute right col-md-2">2</span>
+                                        </div>
+                                        <div class="clean offset col-md-12 row">
+                                            <span class="table-panel-attribute col-md-10">Data transfered [GB]</span>
+                                            <span class="table-panel-attribute right col-md-2">5.7</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clean col-md-3">
+                                    <div class="table-panel no-padding row">
+                                        <div class="table-panel-heading artificial-padding col-md-12">HGw Bitrate [Mbps]</div>
+                                        <div class="offset table-panel-attribute-list col-md-12 row">
+                                            <span class="table-panel-attribute pole col-md-4">KPI Name</span>
+                                            <span class="table-panel-attribute centered col-md-2">Min</span>
+                                            <span class="table-panel-attribute centered col-md-2">Avg</span>
+                                            <span class="table-panel-attribute centered col-md-2">Max</span>
+                                            <span class="table-panel-attribute centered col-md-2">Last</span>
+                                        </div>
+                                        <div class="offset table-panel-attribute-list bottom col-md-12 row">
+                                            <span class="table-panel-attribute blue pole col-md-4">Bitrate</span>
+                                            <span class="table-panel-attribute centered col-md-2">15</span>
+                                            <span class="red table-panel-attribute centered col-md-2">15</span>
+                                            <span class="table-panel-attribute centered col-md-2">15</span>
+                                            <span class="table-panel-attribute centered col-md-2">15</span>
+                                        </div>
+                                     </div>
+                                     <div class="table-panel row">
+                                        <div class="clean col-md-12 row">
+                                            <span class="table-panel-attribute col-md-10">HGw total traffic [GB]</span>
+                                            <span class="table-panel-attribute right col-md-2">5.7</span>
+                                        </div>
+                                    </div>
+                                     <div class="table-panel no-padding row">
+                                        <div class="table-panel-heading artificial-padding col-md-12">HGw Bitrate [Mbps]</div>
+                                        <div class="offset table-panel-attribute-list col-md-12 row">
+                                            <span class="table-panel-attribute pole col-md-4">KPI Name</span>
+                                            <span class="table-panel-attribute centered col-md-2">Min</span>
+                                            <span class="table-panel-attribute centered col-md-2">Avg</span>
+                                            <span class="table-panel-attribute centered col-md-2">Max</span>
+                                            <span class="table-panel-attribute centered col-md-2">Last</span>
+                                        </div>
+                                        <div class="offset table-panel-attribute-list bottom col-md-12 row">
+                                            <span class="table-panel-attribute blue pole col-md-4">RSS [dBm]</span>
+                                            <span class="table-panel-attribute centered col-md-2">-40</span>
+                                            <span class="red table-panel-attribute centered col-md-2">-35</span>
+                                            <span class="table-panel-attribute centered col-md-2">-30</span>
+                                            <span class="table-panel-attribute centered col-md-2">-32</span>
+                                        </div>
+                                    </div>
+                                    <div class="table-panel no-padding row">
+                                        <div class="table-panel-heading artificial-padding col-md-12">HGw Bitrate [Mbps]</div>
+                                        <div class="offset table-panel-attribute-list col-md-12 row">
+                                            <span class="table-panel-attribute pole col-md-4">KPI Name</span>
+                                            <span class="col-md-1"></span>
+                                            <span class="table-panel-attribute centered col-md-2">Avg</span>
+                                            <span class="table-panel-attribute centered col-md-2">Max</span>
+                                            <span class="table-panel-attribute centered col-md-2">Last</span>
+                                        </div>
+                                        <div class="offset table-panel-attribute-list bottom col-md-12 row">
+                                            <span class="table-panel-attribute blue pole col-md-4">RSS [dBm]</span>
+                                            <span class="col-md-1"></span>
+                                            <span class="table-panel-attribute centered col-md-2">-42</span>
+                                            <span class="table-panel-attribute centered col-md-2">-35</span>
+                                            <span class="table-panel-attribute centered col-md-2">-40</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clean donuts col-md-2">
+                                    <div  class="table-panel donut row">
+                                        <div  class="table-panel-heading col-md-12" >Wifi connected time</div>
+										<div id="pie-chart1" class="pie-Chart col-md-12"></div>
+                                    </div>
+                                    <div class="table-panel donut row">
+                                        <div class="table-panel-heading col-md-12">HGw Wifi Usage</div>
+										<div id="pie-chart2" class="pie-Chart col-md-12"></div>
+                                    </div>
+                                    <div class="table-panel donut row">
+                                        <div class="table-panel-heading col-md-12">HGw Interference</div>
+										<div id="pie-chart5" class="pie-Chart col-md-12"></div>
+                                    </div>
+                                    <div class="table-panel donut row">
+                                        <div class="table-panel-heading col-md-12">HGw Interference Home</div>
+										<div id="pie-chart6" class="pie-Chart col-md-12"></div>
+                                    </div>
+                                </div>
+                                <div class="clean donuts col-md-2">
+                                    <div class="table-panel donut row">
+                                        <div class="table-panel-heading col-md-12">HGw Channel</div>
+										<div id="pie-chart3" class="pie-Chart col-md-12"></div>
+                                    </div>
+                                    <div class="table-panel donut row">
+                                        <div class="table-panel-heading col-md-12">Sticky Clients %</div>
+										<div id="pie-chart4" class="pie-Chart col-md-12"></div>
+                                    </div>
+                                    <div class="table-panel donut row">
+                                        <div class="table-panel-heading col-md-12">HGw Client's RSS Status</div>
+										<div id="pie-chart7" class="pie-Chart col-md-12"></div>
+                                    </div>
+                                    <div class="table-panel donut row">
+                                        <div class="table-panel-heading col-md-12">HGw RSS Status</div>
+										<div id="pie-chart8" class="pie-Chart col-md-12"></div>
+                                    </div>
+                                </div>
+                                <div class="clean col-md-2">
+                                    <div id="hgw-info"  class="table-panel hgw-info row">
+                                        <div class="table-panel-heading col-md-12">HGw Info</div>
+                                        <div class="clean col-md-12 row">
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">WiFi enabled:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <i class="check glyphicon glyphicon-ok"></i>
+                                                    <span class="blue">Yes</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-8">HGW Standard:</span>
+                                                <span class="table-panel-attribute right col-md-4">
+                                                    <span class="blue">802.11b</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">IP Address:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">192.168.1.1</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-3">MAC:</span>
+                                                <span class="table-panel-attribute right col-md-9">
+                                                    <span class="blue">AA.BB.XX.DD.GG</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Contract No.:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">22010101010</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-8">Auto Channel enabled:</span>
+                                                <span class="table-panel-attribute right col-md-4">
+                                                    <i class="check glyphicon glyphicon-ok"></i>
+                                                    <span class="blue">Yes</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">SSID:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">ibis-wifi</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Channel:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">6</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Security:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">WPA/WPA2-PSK</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Band:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">2.4 GHz</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Hidden SSID:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">No</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Bandwidth:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">22 MHZ</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-4">Up time:</span>
+                                                <span class="table-panel-attribute right col-md-8">
+                                                    <span class="blue">(35369) 2 days 19:04:10</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Equipment:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">ABC</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Description:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">modern</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">CMTSID:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">BG-C-1-IBIS</span>
+                                                </span>
+                                            </div>
+                                            <div class="clean col-md-12">
+                                                <span class="table-panel-attribute col-md-6">Firmware:</span>
+                                                <span class="table-panel-attribute right col-md-6">
+                                                    <span class="blue">2.2.1004.76</span>
+                                                </span>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="graphs-tab" class="graph-tab" style="display:none">
+                            <div class="tables-content chart-panel row">
+                                <div class="col-md-6">
+                                    <div class="table-panel chart row">
+                                        <div class="table-panel-heading col-md-12">HGw status</div>
+                                        <div id="chart1" class="col-md-12">
+                                        </div>
+                                    </div>
+                                    <div class="table-panel chart row">
+                                        <div class="table-panel-heading col-md-12">HGw Interference</div>
+                                        <div id="chart3" class="col-md-12">
+                                        </div>
+                                    </div>
+                                    <div class="table-panel chart row">
+                                        <div class="table-panel-heading col-md-12">HGw - RSS</div>
+                                        <div id="chart5" class="col-md-12">
+                                        </div>
+                                    </div>
+                                    <div class="table-panel chart row">
+                                        <div class="table-panel-heading col-md-12">HGw - Number of retransmissions</div>
+                                        <div id="chart7" class="col-md-12">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clean col-md-6 offset-right">
+                                    <div class="table-panel chart row">
+                                        <div class="table-panel-heading col-md-12">HGw status</div>
+                                        <div id="chart2" class="col-md-12">
+                                        </div>
+                                    </div>
+                                    <div class="table-panel chart row">
+                                        <div class="table-panel-heading col-md-12">Total No. Of Interference Network</div>
+                                        <div id="chart4" class="col-md-12">
+                                        </div>
+                                    </div>
+                                    <div class="table-panel chart row">
+                                        <div class="table-panel-heading col-md-12">HGw - Bit rate</div>
+                                        <div id="chart6" class="col-md-12">
+                                        </div>
+                                    </div>
+                                    <div class="table-panel chart row">
+                                        <div class="table-panel-heading col-md-12">HGw Number of clients</div>
+                                        <div id="chart8" class="col-md-12">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="script.js"></script>
+    </body>
+</html>
